@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../style.css" type="text/css">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet" />
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 </head>
@@ -47,12 +48,14 @@
             <p> The “Freedom Project” for SEP10 is all about industrial mining. The purpose of this blog is to document the progress of making my freedom project.
 
 
-                <li>Global: There will be less waste and pollution which improves the environment
-                </li>
-                <li>Economic: One positive implication of this that there will be more efficiency and more money made, however there will be less jobs with machines being operated by AI
+                <li>
+                    <ul>Global: There will be less waste and pollution which improves the environment</ul>
+
+                    <ul>Economic: One positive implication of this that there will be more efficiency and more money made, however there will be less jobs with machines being operated by AI</ul>
                 </li>
             </p>
-            <p>More text about the project.</p>
+            <p> One challenge i had was with A-Frame animations. With <code class="langauge-css">startEvents: Animationcomplete__Name</code> you can chain animations and set them to play after another. However this does not work if the animation are in different primitives (shapes/components). So in order for me to line up animations for a object with multiple primitives, i used <code class="langauge-html">delay: 10000</code> (this example delays the animation by 10 seconds). With delays, i was able to line up different animations by delaying them to start at a certain time.</p>
+           <p> If i had more time, i would've made the A-Frame multi-shape object more refined and add more animations.</p>
             <a href="http://github.com/junhual8136/sep10-freedom-project">Link <strong>about</strong> the project</a><br>
             <a href="junhual8136.github.io/sep10-freedom-project">Link <strong>to</strong> the project</a><br>
 
