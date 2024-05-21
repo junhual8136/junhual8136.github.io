@@ -1,13 +1,28 @@
 
 import {fpsDisplay, gameHeight, gameWidth} from './main.js'
+// console.log(localStorage.getItem('firstLoad'))
+if (localStorage.getItem('firstLoad') == undefined) {
+    localStorage.setItem("moveUp", "w")
+    localStorage.setItem("moveLeft", "a")
+    localStorage.setItem("moveDown", "s")
+    localStorage.setItem("moveRight", "d")
+    localStorage.setItem("changeToSlot1", 1)
+    localStorage.setItem("changeToSlot2", 2)
+    localStorage.setItem("changeToSlot3", 3)
+    localStorage.setItem("openTheUpgradeMenu", "m")
+    localStorage.setItem("firstLoad",true)
+    // console.log(localStorage.getItem('firstLoad'))
+}
+console.table(localStorage)
 
-let moveUp = 'w'
-let moveLeft = 'a'
-let moveDown = 's'
-let moveRight = 'd'
-let changeToSlot1 = 1
-let changeToSlot2 = 2
-let changeToSlot3 = 3
+let moveUp = localStorage.getItem('moveUp')
+let moveLeft = localStorage.getItem('moveLeft')
+let moveDown = localStorage.getItem('moveDown')
+let moveRight = localStorage.getItem('moveRight')
+let changeToSlot1 = localStorage.getItem('changeToSlot1')
+let changeToSlot2 = localStorage.getItem('changeToSlot2')
+let changeToSlot3 = localStorage.getItem('changeToSlot3')
+let openTheUpgradeMenu = localStorage.getItem('openTheUpgradeMenu')
 
 
 function createButton(name,x,y,ignoreThis) {
@@ -121,24 +136,36 @@ function createStartMenu() {
                 if (!getKeyPressed) return
                 if (variable == "moveUp") {
                     moveUp = ch
+                    localStorage.setItem("moveUp", ch)
+
                 }
                 else if (variable == "moveLeft") {
                     moveLeft = ch
+                    localStorage.setItem("moveLeft", ch)
                 }
                 else if (variable == "moveDown") {
                     moveDown = ch
+                    localStorage.setItem("moveDown", ch)
                 }
                 else if (variable == "moveRight") {
                     moveRight = ch
+                    localStorage.setItem("moveRight", ch)
                 }
                 else if (variable == "changeToSlot1") {
                     changeToSlot1 = ch
+                    localStorage.setItem("changeToSlot1", ch)
                 }
                 else if (variable == "changeToSlot2") {
                     changeToSlot2 = ch
+                    localStorage.setItem("changeToSlot2", ch)
                 }
                 else if (variable == "changeToSlot3") {
                     changeToSlot3 = ch
+                    localStorage.setItem("changeToSlot3", ch)
+                }
+                else if (variable == "upgradeMenuScreen") {
+                    openTheUpgradeMenu = ch
+                    localStorage.setItem("openTheUpgradeMenu", ch)
                 }
                 destroy(popUpBG)
                 getKeyPressed = false
@@ -186,6 +213,11 @@ function createStartMenu() {
         const hotbar3set =  add([text(changeToSlot3,{size: 50}),pos(hotbar3Rect.pos.x, hotbar3Rect.pos.y),anchor("center"),outline(1),fixed(),opacity(0.8),color(255,255,255),z(0),])
         hotbar3Rect.onClick(() => {popUp("changeToSlot3")})
 
+        const upgradeMenuScreen = add([text('upgrade:',{size:50}),pos(gameWidth/2 + 100, 450),color(255,255,255),z(1),fixed(),])
+        const upgradeMenuScreenRect =  add([pos(upgradeMenuScreen.pos.x + 250, upgradeMenuScreen.pos.y + 25),rect(55, 60, {radius: 4}),anchor("center"),outline(1),fixed(),area(),opacity(0.8),color(0,0,0),z(0),])
+        const upgradeMenuScreenset =  add([text(openTheUpgradeMenu,{size: 50}),pos(upgradeMenuScreenRect.pos.x, upgradeMenuScreenRect.pos.y),anchor("center"),outline(1),fixed(),opacity(0.8),color(255,255,255),z(0),])
+        upgradeMenuScreenRect.onClick(() => {popUp("upgradeMenuScreen")})
+
 
         // updates control
         onUpdate(() => {
@@ -197,10 +229,12 @@ function createStartMenu() {
             hotbar1set.text = changeToSlot1
             hotbar2set.text = changeToSlot2
             hotbar3set.text = changeToSlot3
+
+            upgradeMenuScreenset.text = openTheUpgradeMenu
         })
     })
 
     go('startMenu')
 }
 
-export { createStartMenu, createButton, moveUp,moveDown,moveLeft,moveRight,changeToSlot1,changeToSlot2,changeToSlot3}
+export { createStartMenu, createButton, moveUp,moveDown,moveLeft,moveRight,changeToSlot1,changeToSlot2,changeToSlot3,openTheUpgradeMenu}

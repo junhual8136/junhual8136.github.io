@@ -1,5 +1,5 @@
 import {loadMap} from './map.js'
-import {createStartMenu,createButton,moveUp, moveLeft, moveDown, moveRight, changeToSlot1, changeToSlot2, changeToSlot3} from './start-menu.js'
+import {createStartMenu,createButton,moveUp, moveLeft, moveDown, moveRight, changeToSlot1, changeToSlot2, changeToSlot3, openTheUpgradeMenu} from './start-menu.js'
 import {endGame} from './dead-menu.js'
 import {loadSprites} from './load.js'
 
@@ -11,6 +11,20 @@ let paused = false
 let totalKills = 0
 let currentWave = 0
 
+let totalCurrency = 0
+
+let singleDamage = 20
+let singleGoThrough = 1
+
+let tripleDamage = 20
+let tripleGoThrough = 2
+
+let autoDamage = 20
+let autoGoThrough = 1
+
+let speed = 90
+let maxHealth = 200
+let allUpgradeMenu
 kaboom({
     width: gameWidth,
     height: gameHeight,
@@ -43,9 +57,9 @@ function fpsDisplay() {
      onUpdate(() => fps.text = `FPS: ${debug.fps()}`)
 }
 
-function createMainButton(name,x,y,ignoreThis) {
+function createMainButton(name,x,y,width=240,height = 80,ignoreThis) {
     const mainButton = add([
-        rect(240, 80, { radius: 32 }),
+        rect(width, height, { radius: 32 }),
         color(0,0,0),
         opacity(0.7),
         pos(x,y),
@@ -55,6 +69,7 @@ function createMainButton(name,x,y,ignoreThis) {
         anchor("center"),
         fixed(),
         z(2),
+        'upgradeMenu'
     ])
     mainButton.add([
         text(name),
@@ -75,6 +90,8 @@ function createMainButton(name,x,y,ignoreThis) {
     return mainButton
 }
 
+
+
 const rng = (min, max) => Math.floor(Math.random() * (max - min) + min)
 
 createStartMenu()
@@ -91,7 +108,7 @@ scene('game', () => {
         color('#FFA500'),
     ])
 
-    let speed = 90
+
     let playerHealth = 100
     paused = false
 
@@ -123,7 +140,20 @@ scene('game', () => {
     const currentProjectiles = []
 
     let hostileSpeed = 90
+    let sprintSpeed = speed * 2
+    let sprinting = false
 
+    let isUpgradeMenuOpen = false
+    const upgradeCosts = {
+        singleDMG: 10,
+        singleGoThrough: 10,
+        tripleDMG: 10,
+        tripleGoThrough: 10,
+        autoDMG: 10,
+        autoGoThrough: 10,
+        maxHealth: 10,
+        speed: 10,
+    }
 
     // Heals the player every 5 seconds
     setInterval(() => {
@@ -179,6 +209,208 @@ scene('game', () => {
         text(amountLeft3,{size:18}),pos(slot3.pos.x + 5, slot3.pos.y + 10),color(255,255,255),z(1),fixed(),
     ])
 
+
+    // Upgrade menu
+    // function upgradeMenu(openOrClose) {
+
+
+    const upgradeMenuBackground = add([
+        pos(gameWidth/2, gameHeight/2.5),
+        rect(1100, 500, {radius: 12}),
+        outline(3),
+        fixed(),
+        anchor('center'),
+        color(0,0,0),
+        opacity(0.6),
+        z(1),
+        'upgradeMenu'
+    ])
+    const menuSingleDamage = add([text(`Single Damage: ${singleDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuSingleDamageUpgrade = createMainButton('+',menuSingleDamage.pos.x + 150, menuSingleDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.singleDMG >= 0) {
+            singleDamage++
+            totalCurrency -= upgradeCosts.singleDMG
+            upgradeCosts.singleDMG += 10
+        }
+    })
+    const menuSingleDamageCost = add([
+        text(`Cost: ${upgradeCosts.singleDMG}`, {size:24}),
+        pos(menuSingleDamage.pos.x - 100,menuSingleDamage.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+    const menuTripleDamage = add([text(`Triple Damage: ${tripleDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y - 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuTripleDamageUpgrade = createMainButton('+',menuTripleDamage.pos.x + 150, menuTripleDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.singleDMG >= 0) {
+            tripleDamage++
+            totalCurrency -= upgradeCosts.tripleDMG
+            upgradeCosts.tripleDMG += 10
+        }
+    })
+    const menuTripleDamageCost = add([
+        text(`Cost: ${upgradeCosts.tripleDMG}`, {size:24}),
+        pos(menuTripleDamage.pos.x - 100,menuTripleDamage.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuAutoDamage = add([text(`Auto Damage: ${autoDamage}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y ),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuAutoDamageUpgrade = createMainButton('+',menuAutoDamage.pos.x + 150, menuAutoDamage.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.autoDMG >= 0) {
+            autoDamage++
+            totalCurrency -= upgradeCosts.autoDMG
+            upgradeCosts.autoDMG += 10
+        }
+    })
+    const menuAutoDamageCost = add([
+        text(`Cost: ${upgradeCosts.autoDMG}`, {size:24}),
+        pos(menuAutoDamage.pos.x - 100,menuAutoDamage.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuSpeed = add([text(`Speed: ${speed}`,{size:24}),pos(upgradeMenuBackground.pos.x - 250, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuSpeedUpgrade = createMainButton('+',menuSpeed.pos.x + 150, menuSpeed.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.speed >= 0) {
+            speed += 5
+            totalCurrency -= upgradeCosts.speed
+            upgradeCosts.speed += 10
+        }
+    })
+    const menuSpeedCost = add([
+        text(`Cost: ${upgradeCosts.speed}`, {size:24}),
+        pos(menuSpeed.pos.x - 100,menuSpeed.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+
+
+    const menuSinglePiercing = add([text(`Single Piercing: ${singleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 200, upgradeMenuBackground.pos.y - 200),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuSinglePiercingUpgrade = createMainButton('+',menuSinglePiercing.pos.x + 150, menuSinglePiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.singleGoThrough >= 0) {
+            singleGoThrough++
+            totalCurrency -= upgradeCosts.singleGoThrough
+            upgradeCosts.singleGoThrough += 10
+        }
+    })
+    const menuSinglePiercingCost = add([
+        text(`Cost: ${upgradeCosts.singleGoThrough}`, {size:24}),
+        pos(menuSinglePiercing.pos.x - 100,menuSinglePiercing.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuTriplePiercing = add([text(`Triple Piercing: ${tripleGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 200, upgradeMenuBackground.pos.y - 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuTriplePiercingUpgrade = createMainButton('+',menuTriplePiercing.pos.x + 150, menuTriplePiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.tripleGoThrough >= 0) {
+            tripleGoThrough++
+            totalCurrency -= upgradeCosts.tripleGoThrough
+            upgradeCosts.tripleGoThrough += 10
+        }
+    })
+    const menuTriplePiercingCost = add([
+        text(`Cost: ${upgradeCosts.tripleGoThrough}`, {size:24}),
+        pos(menuTriplePiercing.pos.x - 100,menuTriplePiercing.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuAutoPiercing = add([text(`Auto Piercing: ${autoGoThrough}`,{size:24}),pos(upgradeMenuBackground.pos.x + 200, upgradeMenuBackground.pos.y),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuAutoPiercingUpgrade = createMainButton('+',menuAutoPiercing.pos.x + 150, menuAutoPiercing.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.autoGoThrough >= 0) {
+            autoGoThrough++
+            totalCurrency -= upgradeCosts.autoGoThrough
+            upgradeCosts.autoGoThrough += 10
+        }
+    })
+    const menuAutoPiercingCost = add([
+        text(`Cost: ${upgradeCosts.autoGoThrough}`, {size:24}),
+        pos(menuAutoPiercing.pos.x - 100,menuAutoPiercing.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const menuMaxHealth = add([text(`Max Health: ${maxHealth}`,{size:24}),pos(upgradeMenuBackground.pos.x + 200, upgradeMenuBackground.pos.y + 100),fixed(),anchor('center'),color(255,255,255),z(1),'upgradeMenu'])
+    const menuMaxHealthUpgrade = createMainButton('+',menuMaxHealth.pos.x + 150, menuMaxHealth.pos.y,80,60,() => {
+        if (isUpgradeMenuOpen && totalCurrency - upgradeCosts.maxHealth >= 0) {
+            maxHealth += 10
+            totalCurrency -= upgradeCosts.maxHealth
+            upgradeCosts.maxHealth += 10
+        }
+    })
+    const menuMaxHealthCost = add([
+        text(`Cost: ${upgradeCosts.maxHealth}`, {size:24}),
+        pos(menuMaxHealth.pos.x - 100,menuMaxHealth.pos.y + 20),
+        z(1),
+        color(255,255,255),
+        fixed(),
+        'upgradeMenu'
+    ])
+
+    const currencyDisplay = add([
+        text(totalCurrency),
+        pos(upgradeMenuBackground.pos.x + 450,upgradeMenuBackground.pos.y - 220),
+        color(YELLOW),
+        fixed(),
+        z(2),
+        anchor('center'),
+        'upgradeMenu',
+    ])
+
+    const closeButton = createMainButton('Close',gameWidth/2, gameHeight - 275,240,80, () => {
+        if (isUpgradeMenuOpen) {
+            const allUpgradeMenu2 = get('upgradeMenu')
+            allUpgradeMenu2.forEach(element => {
+                element.hidden = true
+            })
+            isUpgradeMenuOpen = false
+        }
+    })
+    const allUpgradeMenus = get('upgradeMenu')
+    allUpgradeMenus.forEach(element => {
+        element.hidden = true
+    })
+
+
+    onUpdate(() => {
+        console.log(isUpgradeMenuOpen)
+        if (!isUpgradeMenuOpen) return
+        menuSingleDamage.text = `Single Damage: ${singleDamage}`
+        menuTripleDamage.text = `Triple damage: ${tripleDamage}`
+        menuAutoDamage.text = `Auto Damage: ${autoDamage}`
+        menuSinglePiercing.text = `Single Piercing: ${singleGoThrough}`
+        menuTriplePiercing.text = `Triple Piercing: ${tripleGoThrough}`
+        menuAutoPiercing.text = `Auto Piercing: ${autoGoThrough}`
+        menuSpeed.text = `Speed: ${speed}`
+        menuMaxHealth.text = `Max Health: ${maxHealth}`
+        currencyDisplay.text = totalCurrency
+
+        menuSingleDamageCost.text = `Cost: ${upgradeCosts.singleDMG}`
+        menuTripleDamageCost.text = `Cost: ${upgradeCosts.tripleDMG}`
+        menuAutoDamageCost.text = `Cost: ${upgradeCosts.autoDMG}`
+        menuSingleDamageCost.text = `Cost: ${upgradeCosts.singleGoThrough}`
+        menuTripleDamageCost.text = `Cost: ${upgradeCosts.tripleGoThrough}`
+        menuAutoDamageCost.text = `Cost: ${upgradeCosts.autoGoThrough}`
+        menuSpeedCost.text = `Cost: ${upgradeCosts.speed}`
+        menuMaxHealth.text = `Cost: ${upgradeCosts.maxHealth}`
+    })
+
+
     // Menu GUI
     const menuBG = add([
         pos(gameWidth/2 - 200, gameHeight/5),
@@ -196,12 +428,12 @@ scene('game', () => {
         color(255,255,255),
         z(3),
     ])
-    const goToStartMenu = createMainButton('Start Menu',gameWidth/2,gameHeight/3 + 190, () => {
+    const goToStartMenu = createMainButton('Start Menu',gameWidth/2,gameHeight/3 + 190,240,80, () => {
         if (!goToStartMenu.hidden) {
             go('startMenu')
         }
     })
-    const resumeButton = createMainButton('resume',gameWidth/2,gameHeight/3 + 60, () => {
+    const resumeButton = createMainButton('resume',gameWidth/2,gameHeight/3 + 60,240,80, () => {
         if (!resumeButton.hidden) {
             menuBG.hidden = true
             menuText.hidden = true
@@ -230,11 +462,33 @@ scene('game', () => {
 
     // Controls
     // movement
-    onKeyDown(moveUp, () => {player.move(0, -speed)})
-    onKeyDown(moveLeft, () => {player.move(-speed, 0)})
-    onKeyDown(moveDown, () => {player.move(0, speed)})
-    onKeyDown(moveRight, () => {player.move(speed, 0)})
-    player.onUpdate(() => {camPos(player.pos )})
+
+    onKeyDown(moveUp, () => {
+        if (!sprinting) player.move(0, -speed)
+        else if (sprinting) player.move(0, -sprintSpeed)
+    })
+    onKeyDown(moveLeft, () => {
+        if (!sprinting) player.move(-speed, 0)
+        else if (sprinting) player.move(-sprintSpeed, 0)
+    })
+    onKeyDown(moveDown, () => {
+        if (!sprinting) player.move(0, speed)
+        else if (sprinting) player.move(0,sprintSpeed)
+    })
+    onKeyDown(moveRight, () => {
+        if (!sprinting) player.move(speed, 0)
+        else if (sprinting) player.move(sprintSpeed,0)
+
+    })
+    player.onUpdate(() => {camPos(player.pos)})
+
+     // Sprinting
+     onKeyDown("shift", () => {
+        sprinting = true
+     })
+     onKeyRelease("shift", () => {
+        sprinting = false
+     })
 
     // Hotbar switch and select
     // Switch to hotbar 1
@@ -290,6 +544,17 @@ scene('game', () => {
         }
     })
 
+    // Opens upgrade menu
+    onKeyPress(openTheUpgradeMenu, ()=> {
+            if (isUpgradeMenuOpen) return
+
+            allUpgradeMenus.forEach(element => {
+                element.hidden = false
+            })
+
+            isUpgradeMenuOpen = true
+    })
+
     // Toggles debug mode
     onKeyPress('p', () => {
         if (!debug.inspect) debug.inspect = true
@@ -325,7 +590,7 @@ scene('game', () => {
     // single Shot for hotbar1
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: singleGoThrough, fireType: 'single'},"projectile",]))
          amountLeft1--
         cooldown = true
         setTimeout(() => {
@@ -335,9 +600,9 @@ scene('game', () => {
     // Triple Shot for hotbar2
     function threeShot(timeout) {
         if (threeCooldown) return
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 2},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x ,player.pos.y),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: tripleGoThrough, fireType: 'triple', },"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + 25,player.pos.y + 25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: tripleGoThrough,fireType: 'triple',},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + -25,player.pos.y + -25),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: tripleGoThrough, fireType: 'triple',},"projectile",]))
         amountLeft2--
         threeCooldown = true
         setTimeout(() => {
@@ -347,7 +612,7 @@ scene('game', () => {
     // Auto for hotbar 3
     function shootAuto(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: 1},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: autoGoThrough, fireType: 'auto',},"projectile",]))
         amountLeft3--
         cooldown = true
         setTimeout(() => {
@@ -359,10 +624,6 @@ scene('game', () => {
     onUpdate(() => {
         if (paused) return
 
-        // Sprinting
-        if (isKeyDown("shift")) speed = 120
-        onKeyRelease("shift", () => speed = 60)
-
         // updates health
         HP.text = playerHealth
         HP.color = healthStatus(playerHealth)
@@ -370,7 +631,16 @@ scene('game', () => {
 
         // prompts the dead menu
         if (HP.value <= 0) {
-            currentWave
+            currentWave = 0
+            totalCurrency = 0
+            singleDamage = 0
+            singleGoThrough = 1
+            tripleDamage = 0
+            tripleGoThrough = 2
+            autoDamage = 0
+            autoGoThrough = 1
+            speed = 90
+            maxHealth = 200
             endGame()
         }
 
@@ -466,7 +736,6 @@ scene('game', () => {
             return
         }
 
-
         // checks if all the enemies are dead and summons a new wave
         if (hostileAlive.length === 0 && gameTime > 10) {
             if (!spawnCooldown) {
@@ -483,6 +752,10 @@ scene('game', () => {
                 }, 2000);
                 // cooldown to prevent bug that calls the wave function twice due to lag
                 spawnCooldown = true
+
+                if (currentWave % 5 == 0) {
+                    hostileSpeed += 20
+                }
                 setTimeout(() => {
                     spawnCooldown = false
                 }, 4000);
@@ -509,9 +782,15 @@ scene('game', () => {
         if (projectile.piercing < 1) {
             destroy(projectile)
         }
-        hostile.health -= damage
-        projectile.piercing -= 1
 
+        if (projectile.fireType == 'single') {
+            hostile.health -= singleDamage
+        } else if (projectile.fireType == 'triple') {
+            hostile.health -= tripleDamage
+        } else if (projectile.fireType == 'auto') {
+            hostile.health -= autoDamage
+        }
+        projectile.piercing -= 1
 
         // checks from which direction the bullet hit the enemy and deal knockback toward that direction
         if (hostile.pos.x > projectile.pos.x) { // from right
@@ -587,7 +866,8 @@ scene('game', () => {
         amountLeft1 += 5
         amountLeft2 += 2
         amountLeft3 += 10
-        if (playerHealth <= 200)  playerHealth += 10
+        totalCurrency += 10
+        if (playerHealth < maxHealth)  playerHealth += 10
         destroy(drop)
 
     })
