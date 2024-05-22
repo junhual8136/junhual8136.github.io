@@ -643,7 +643,6 @@ scene('game', () => {
 
         // prompts the dead menu
         if (HP.value <= 0) {
-            currentWave = 0
             totalCurrency = 0
             singleDamage = 0
             singleGoThrough = 1
