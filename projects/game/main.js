@@ -146,7 +146,7 @@ scene('game', () => {
 
     let explosionKB = -30000
 
-    let hostileKB = -2000
+    let hostileKB = 2000
     let kb = 4000
     let hostileDamage = 5
 
@@ -520,7 +520,6 @@ scene('game', () => {
     onKeyPress(changeToSlot2.toString(), () => {
         currentSlot = 2
         damage = 40
-        hostileKB = 3500
         slot2.outline.width = 4
         slot2.outline.color = WHITE
 
@@ -660,6 +659,7 @@ scene('game', () => {
                 maxHealth: 10,
                 speed: 10,
             }
+            currentWave = 0
             endGame()
         }
 
@@ -831,16 +831,16 @@ scene('game', () => {
 
         // checks from which direction the bullet hit the enemy and deal knockback toward that direction
         if (hostile.pos.x > projectile.pos.x) { // from right
-            hostile.move(hostileKB, 0)
+            hostile.move(-2000, 0)
         }
         else if (hostile.pos.x < projectile.pos.x) { // from left
-            hostile.move(-hostileKB, 0)
+            hostile.move(2000, 0)
         }
-        else if (hostile.pos.y > projectile.pos.x) { // from top
-            hostile.move(0, hostileKB)
+        else if (hostile.pos.y < projectile.pos.y) { // from top
+            hostile.move(0, 2000)
         }
-        else if (hostile.pos.y < projectile.pos.x) { // from bottom
-            hostile.move(0, -hostileKB)
+        else if (hostile.pos.y > projectile.pos.y - 10) { // from bottom
+            hostile.move(0, -2000)
         }
         // deletes the enemy if health is 0 or below
         // spawns an ammo drop at that death location

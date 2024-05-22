@@ -33,7 +33,6 @@ function endGame() {
         ])
         createButton('menu',gameWidth/1.85,350, ()=> {
             go('startMenu')
-            currentWave = 0
         })
     })
     go('end')
