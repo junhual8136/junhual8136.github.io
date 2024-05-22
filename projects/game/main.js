@@ -117,7 +117,7 @@ scene('game', () => {
     fpsDisplay()
     setBackground(BLACK)
 
-    const player = add([sprite("pale"), area(),body(),pos(750, 600),scale(2.5),"player"],)
+    const player = add([sprite("pale"), area(),body(),pos(750, 600),anchor('center'),scale(2.5),"player"],)
     const greenTest = add([
         circle(13),
         opacity(0.9),
@@ -599,7 +599,7 @@ scene('game', () => {
     // single Shot for hotbar1
     function shoot(xOffset,yOffset,timeout = 1) {
         if (cooldown) return
-        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: singleGoThrough, fireType: 'single'},"projectile",]))
+        currentProjectiles.push(add([sprite("yellow"),pos(player.pos.x + xOffset,player.pos.y + yOffset),anchor("center"),area(),scale(0.2),move(toWorld(mousePos()).sub(player.pos),1500),offscreen({ destroy: true }),{piercing: singleGoThrough, fireType: 'single'},"projectile",]))
          amountLeft1--
         cooldown = true
         setTimeout(() => {
@@ -735,9 +735,9 @@ scene('game', () => {
             }
             // 1/10 enemies will be a unique type
             if (explosive === 1) {
-                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile","explosive",{health: hostileHealth}]))
+                hostileAlive.push(add([sprite("red"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),anchor("center"),offscreen({ destroy: false }),"hostile","explosive",{health: hostileHealth}]))
             } else {
-                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),offscreen({ destroy: false }),"hostile",{health: hostileHealth}]))
+                hostileAlive.push(add([sprite("green"), area(),body(),pos(randomX, randomY),scale(0.2),outline(5),anchor("center"),offscreen({ destroy: false }),"hostile",{health: hostileHealth}]))
             }
         }
     }
@@ -830,17 +830,18 @@ scene('game', () => {
         projectile.piercing -= 1
 
         // checks from which direction the bullet hit the enemy and deal knockback toward that direction
-        if (hostile.pos.x > projectile.pos.x) { // from right
-            hostile.move(-2000, 0)
-        }
-        else if (hostile.pos.x < projectile.pos.x) { // from left
+        if (hostile.pos.x > projectile.pos.x) { // from left
             hostile.move(2000, 0)
         }
-        else if (hostile.pos.y < projectile.pos.y) { // from top
-            hostile.move(0, 2000)
+        else if (hostile.pos.x < projectile.pos.x) { // from right
+            hostile.move(-2000, 0)
         }
-        else if (hostile.pos.y > projectile.pos.y - 10) { // from bottom
+
+        if (hostile.pos.y < projectile.pos.y) { // from top
             hostile.move(0, -2000)
+        }
+        else if (hostile.pos.y > projectile.pos.y) { // from bottom
+            hostile.move(0, 2000)
         }
         // deletes the enemy if health is 0 or below
         // spawns an ammo drop at that death location
