@@ -147,7 +147,7 @@ scene('game', () => {
     let explosionKB = -30000
 
     let hostileKB = -2000
-    let kb = 6000
+    let kb = 4000
     let hostileDamage = 5
 
     const hostileAlive = []
@@ -508,7 +508,6 @@ scene('game', () => {
     onKeyPress(changeToSlot1.toString(), () => {
         currentSlot = 1
         damage = 20
-        hostileKB = 2000
         slot1.outline.width = 4
         slot1.outline.color = WHITE
 
@@ -534,7 +533,6 @@ scene('game', () => {
     onKeyPress(changeToSlot3.toString(), () => {
         currentSlot = 3
         damage = 20
-        hostileKB = 2000
         slot3.outline.width = 4
         slot3.outline.color = WHITE
 
