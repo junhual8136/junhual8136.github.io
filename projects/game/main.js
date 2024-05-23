@@ -160,7 +160,7 @@ scene('game', () => {
     let sprinting = false
 
     let isUpgradeMenuOpen = false
-
+    let testCommandMenuOpen = false
 
     // Heals the player every 5 seconds
     setInterval(() => {
@@ -217,6 +217,83 @@ scene('game', () => {
     ])
 
 
+    // Command bar used for testing
+    const testMenu = add([
+        rect(200,50),
+        pos(gameWidth/2,gameHeight - 250),
+        anchor('center'),
+        area(),
+        opacity(0.5),
+        color(0,0,0),
+        fixed(),
+        'testMenu',
+        'commandBar',
+    ])
+    const testMenuText = add([
+        text('', {size: 18}),
+        anchor('center'),
+        pos(testMenu.pos.x,testMenu.pos.y),
+        fixed(),
+        color(255,255,255),
+        'testMenu',
+    ])
+    onClick('commandBar', (command) => {
+        testCommandMenuOpen = true
+    })
+    let textCD = false
+    onCharInput((ch) => {
+        if (testCommandMenuOpen) {
+            if (textCD) return
+            testMenuText.text += ch
+            textCD = true
+            setTimeout(() => {
+                textCD = false
+            }, 50);
+
+        }
+    })
+        onKeyPress('backspace',() => {
+            if (testCommandMenuOpen) {
+                testMenuText.text = ''
+            }
+        })
+        onKeyPress('enter', () => {
+            if (testCommandMenuOpen) {
+                if (testCommandMenuOpen) {
+                    let execute = testMenuText.text
+                    if (execute.toLowerCase() == 'kill') {
+                        playerHealth = 0
+                    }
+                    if (execute.toLowerCase() == 'set 1000') {
+                        totalCurrency = 1000
+                    }
+                    let searchWave = new RegExp('wave')
+                    if (searchWave.test(execute)) {
+                        let result = execute.match('[0-9]')
+                        currentWave += 9
+
+                    }
+                    hideCommandMenu('hide')
+                }
+            }
+        })
+
+    function hideCommandMenu(which) {
+        let allCommmandcomponents = get('testMenu')
+        if (which == 'show') {
+            testCommandMenuOpen = true
+            allCommmandcomponents.forEach(element => {
+                element.hidden = false
+            })
+        } else if (which == 'hide') {
+            testCommandMenuOpen = false
+            allCommmandcomponents.forEach(element => {
+                element.hidden = true
+            });
+        }
+    }
+
+    hideCommandMenu('hide')
     // Upgrade menu
     // function upgradeMenu(openOrClose) {
 
@@ -540,7 +617,10 @@ scene('game', () => {
         slot2.outline.width = 0
         slot2.outline.color = BLACK
     })
-
+    // opens command bar
+    onKeyPress('/', () => {
+        hideCommandMenu('show')
+    })
     // Opens Menu
     onKeyPress('escape', () => {
         if (!menuOpen) {
