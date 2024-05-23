@@ -917,16 +917,17 @@ scene('game', () => {
         else playerHealth -= hostileDamage
 
         // checks if player was hit by an enemy and will knock the player back from the direction it was hit from
-        if (hostile.pos.x > player.pos.x) { // from right
+        if (hostile.pos.x > player.pos.x + 10) { // from right
             player.move(-kb, 0)
         }
-        else if (hostile.pos.x < player.pos.x) { // from left
+        else if (hostile.pos.x < player.pos.x - 10) { // from left
             player.move(kb, 0)
         }
-        else if (hostile.pos.y > player.pos.x) { // from top
+
+        if (hostile.pos.y > player.pos.y) { // from top
             player.move(0, -kb)
         }
-        else if (hostile.pos.y < player.pos.x) { // from bottom
+        else if (hostile.pos.y < player.pos.y) { // from bottom
             player.move(0, kb)
         }
     })
