@@ -584,10 +584,8 @@ scene('game', () => {
     // Switch to hotbar 1
     onKeyPress(changeToSlot1.toString(), () => {
         currentSlot = 1
-        damage = 20
         slot1.outline.width = 4
         slot1.outline.color = WHITE
-
         slot2.outline.width = 0
         slot2.outline.color = BLACK
         slot3.outline.width = 0
@@ -596,7 +594,6 @@ scene('game', () => {
     // Switch to hotbar 2
     onKeyPress(changeToSlot2.toString(), () => {
         currentSlot = 2
-        damage = 40
         slot2.outline.width = 4
         slot2.outline.color = WHITE
 
@@ -608,7 +605,6 @@ scene('game', () => {
     // Switch to hotbar 3
     onKeyPress(changeToSlot3.toString(), () => {
         currentSlot = 3
-        damage = 20
         slot3.outline.width = 4
         slot3.outline.color = WHITE
 
@@ -721,11 +717,11 @@ scene('game', () => {
         // prompts the dead menu
         if (HP.value <= 0) {
             totalCurrency = 0
-            singleDamage = 0
+            singleDamage = 20
             singleGoThrough = 1
-            tripleDamage = 0
+            tripleDamage = 20
             tripleGoThrough = 2
-            autoDamage = 0
+            autoDamage = 20
             autoGoThrough = 1
             speed = 90
             maxHealth = 200
@@ -914,7 +910,7 @@ scene('game', () => {
             hostile.move(2000, 0)
         }
         else if (hostile.pos.x < projectile.pos.x) { // from right
-            hostile.move(-m2000, 0)
+            hostile.move(-2000, 0)
         }
 
         if (hostile.pos.y < projectile.pos.y) { // from top
