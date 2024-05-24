@@ -267,7 +267,7 @@ scene('game', () => {
                     if (execute.toLowerCase() == 'set 1000') {
                         totalCurrency = 1000
                     }
-                    let searchWave = new RegExp('wave')
+                    let searchWave = new RegExp('add')
                     if (searchWave.test(execute)) {
                         let result = execute.match('[0-9]')
                         currentWave += 9
@@ -914,7 +914,7 @@ scene('game', () => {
             hostile.move(2000, 0)
         }
         else if (hostile.pos.x < projectile.pos.x) { // from right
-            hostile.move(-2000, 0)
+            hostile.move(-m2000, 0)
         }
 
         if (hostile.pos.y < projectile.pos.y) { // from top
