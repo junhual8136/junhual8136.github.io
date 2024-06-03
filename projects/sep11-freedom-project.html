@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title class="owner-name">#</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css" type="text/css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.css" rel="stylesheet" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand owner-name" href="#"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="github" target="_blank">Github</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../index.html#projects">Projects</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- First Container -->
+    <div class="container-fluid bg-1">
+        <div class="container">
+
+            <h1 class="margin text-center">11th Grade Freedom Project</h1>
+            <p> The “Freedom Project” for SEP11 is all about javascript game development and the use of Kaboom.js. The purpose of this blog is to document the progress of making my freedom project.</p>
+            <p> One challenge i had was with menu UIs. The kaboom.js library does not provide a way to make menus. Which lead me to create my own Menus on scratch through creating rectangles, changing its radius and opacity then adding texts and button over it. I realized that with the <code class="language-javascript">obj.hidden</code> property allows me to hide and open the menu. I also had realized that the buttons can still be pressed if its hidden which led to me add a conditional:<p>
+                <pre><code class="language-js">
+                    if (!obj.hidden) {
+                        btn.onClick(() => {
+                            // runs the code...
+                        })
+                    }
+                  </code></pre>
+           <p> If i had more time, i would've added proper textures and animations for running, shooting, and etc.</p>
+           <p>Overall, I learned a lot about game development such as updating text and running checks on the player and sprites</p>
+            <a href="http://github.com/junhual8136/sep11-freedom-project" target="_blank">Link to the <strong>source code</strong></a><br>
+            <a href="https://junhual8136.github.io/projects/game/index.html" target="_blank">Link to the <strong>game</strong> (preview)</a><br>
+
+            <!--EXAMPLE OF PREVIEW LINK-->
+            <!--<a href="http://yourUserName.github.io/yourRepoName">Preview</a><br>-->
+            <!--EXAMPLE OF GITHUB LINK-->
+            <!--<a href="http://github.com/yourUserName/yourRepoName">Github</a><br>-->
+
+            <!-- <img src"#" class="img-fluid project-img"> -->
+
+
+            <div class="row">
+
+                <!--
+                <div class="col-sm-6">
+                    Use this to...
+                </div>
+                <div class="col-sm-6">
+                    ...make two columns
+                </div>
+                -->
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <!-- Footer -->
+    <footer class="container-fluid bg-4 text-center">
+
+    </footer>
+
+
+    <script src="../script.js"></script>
+</body>
+
+</html>

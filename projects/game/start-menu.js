@@ -1,6 +1,9 @@
 
 import {fpsDisplay, gameHeight, gameWidth} from './main.js'
 // console.log(localStorage.getItem('firstLoad'))
+
+
+// first load, (only if its the first time) sets all the controls and saves it to local storage
 if (localStorage.getItem('firstLoad') == undefined) {
     localStorage.setItem("moveUp", "w")
     localStorage.setItem("moveLeft", "a")
@@ -15,6 +18,7 @@ if (localStorage.getItem('firstLoad') == undefined) {
 }
 console.table(localStorage)
 
+// get all the controls saved from local storage
 let moveUp = localStorage.getItem('moveUp')
 let moveLeft = localStorage.getItem('moveLeft')
 let moveDown = localStorage.getItem('moveDown')

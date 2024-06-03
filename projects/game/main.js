@@ -39,6 +39,8 @@ let upgradeCosts = {
 
 let hostileHealth = 100
 let explosionDamage = 25
+let gameTime = 0
+
 
 kaboom({
     width: gameWidth,
@@ -135,7 +137,6 @@ scene('game', () => {
 
     let menuOpen = false
 
-    let gameTime = 0
     let spawnCooldown = false
     let drops = []
 
