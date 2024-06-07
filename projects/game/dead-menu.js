@@ -1,5 +1,5 @@
 import { createStartMenu, createButton } from "./start-menu.js"
-import { fpsDis, gameHeight, gameWidth, currentWave, totalKills } from "./main.js"
+import { fpsDisplay, gameHeight, gameWidth, currentWave, totalKills } from "./main.js"
 
 
 
