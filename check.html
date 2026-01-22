@@ -19,27 +19,27 @@
     
     <script>
        
-        document.getElementById('myButton').addEventListener('click', () => {
-                const uuids = [
-                  "8826ab9973804749beba8436eaac510a",
-                  "d6b5d5120ef0409698ee2ad30754c7d2"
-                ];
-    
-                const key = "372e8be1-45f9-4dc5-98eb-ae035e785ba7";
-    
-                for (const uuid of uuids) {
-                  const url = new URL("https://https://api.hypixel.net/v2/status/v2/status");
-                  url.search = new URLSearchParams({ key, uuid }).toString();
-                
-                  try {
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    console.log(`UUID ${uuid}:`, data);
-                  } catch (error) {
-                    console.error(`Error fetching UUID ${uuid}:`, error);
-                  }
-                }
-            });
+       const uuids = [
+  "8826ab9973804749beba8436eaac510a",
+  "d6b5d5120ef0409698ee2ad30754c7d2"
+];
+
+const key = "372e8be1-45f9-4dc5-98eb-ae035e785ba7";
+
+(async () => {
+  for (const uuid of uuids) {
+    const url = new URL("https://api.hypixel.net/v2/status");
+    url.search = new URLSearchParams({ key, uuid }).toString();
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log(`UUID ${uuid}:`, data);
+    } catch (error) {
+      console.error(`Error fetching UUID ${uuid}:`, error);
+    }
+  }
+})();
         
         
     </script>
